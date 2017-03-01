@@ -1,0 +1,7 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<UnityInstallationDir>D:\Program Files (x86)\Unity\Editor</UnityInstallationDir>
+		<UnityWSAPlayerDir>D:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\MetroSupport</UnityWSAPlayerDir>
+		<UnityProjectDir>D:\workspace\CodeStomp\Root\Source\BouncingBallsForBabiesUnity</UnityProjectDir>
+	</PropertyGroup>
+</Project>
