@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class SplashScreenCameraScript : MonoBehaviour
@@ -29,7 +30,7 @@ public class SplashScreenCameraScript : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0) || Input.touches.Any() || Time.time > expireTime)
         {
-            Application.LoadLevel("MainScene");
+            SceneManager.LoadScene("MainScene");
         }
     }
 }

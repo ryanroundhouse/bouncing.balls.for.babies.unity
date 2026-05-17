@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class BallScript : MonoBehaviour
@@ -28,7 +29,7 @@ public class BallScript : MonoBehaviour
         {
             WinningInfoScript.WinningPlanet = name;
             WinningInfoScript.WinningPlanetIndex = BallIndex;
-            Application.LoadLevel("VictoryScene");
+            SceneManager.LoadScene("VictoryScene");
         }
     }
 
@@ -63,7 +64,7 @@ public class BallScript : MonoBehaviour
         }
         forceDirection.Normalize();
 
-        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         GetComponent<Rigidbody>().AddForce(new Vector3(forceDirection.x, 0, forceDirection.z) * HitPower);
         lastClickPoint = Vector3.zero;
         lastTouchPoint = Vector3.zero;

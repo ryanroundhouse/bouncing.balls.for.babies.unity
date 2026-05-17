@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class VictoryCameraScript : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class VictoryCameraScript : MonoBehaviour
 
         if (Time.time > CanRestartTimer && (Input.GetMouseButtonDown(0) || Input.touches.Any()))
         {
-            Application.LoadLevel("MainScene");
+            SceneManager.LoadScene("MainScene");
         }
     }
 	

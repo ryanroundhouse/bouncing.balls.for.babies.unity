@@ -19,13 +19,28 @@ public class Cylinderscript : MonoBehaviour
         IsSquished = false;
         expireTime = -1;
         animator = GetComponent<Animation>();
+
+        var filters = GetComponentsInChildren<MeshFilter>(true);
+        Debug.Log($"[Cylinder] {name} at pos={transform.position} scale={transform.localScale} layer={gameObject.layer} active={gameObject.activeInHierarchy}");
+        foreach (var f in filters)
+        {
+            var m = f.sharedMesh;
+            var r = f.GetComponent<MeshRenderer>();
+            var go = f.gameObject;
+            var vCount = m != null ? m.vertexCount : -1;
+            var subM = m != null ? m.subMeshCount : -1;
+            var bounds = r != null ? r.bounds.ToString() : "(none)";
+            Debug.Log($"[Cylinder] {go.name} worldPos={go.transform.position} lossyScale={go.transform.lossyScale} active={go.activeInHierarchy} vertices={vCount} submeshes={subM} rendererBounds={bounds} layer={go.layer}");
+        }
+        var cam = Camera.main;
+        if (cam != null) Debug.Log($"[Cylinder] Camera pos={cam.transform.position} cullingMask={System.Convert.ToString(cam.cullingMask, 2)}");
     }
 
     void Update()
     {
         if (IsSquished)
         {
-            animator.Stop("idle");
+            if (animator != null) animator.Stop();
             if (Time.time > expireTime)
             {
                 ParentScript.RemoveCylinder(gameObject);
@@ -33,9 +48,9 @@ public class Cylinderscript : MonoBehaviour
         }
         else
         {
-            if (!animator.IsPlaying("idle"))
+            if (animator != null && animator.clip != null && !animator.isPlaying)
             {
-                animator.Play("idle");
+                animator.Play();
             }
         }
     }

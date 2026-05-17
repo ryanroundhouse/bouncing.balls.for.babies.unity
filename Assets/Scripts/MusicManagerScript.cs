@@ -10,6 +10,16 @@ public class MusicManagerScript : MonoBehaviour
     void Start()
     {
         sources = GetComponents<AudioSource>().ToList();
+        foreach (var s in sources)
+        {
+            s.spatialBlend = 0f;
+        }
+        Debug.Log($"[MusicManager] Start: found {sources.Count} AudioSource(s)");
+        for (var i = 0; i < sources.Count; i++)
+        {
+            var s = sources[i];
+            Debug.Log($"[MusicManager]   [{i}] clip={(s.clip != null ? s.clip.name : "<null>")} volume={s.volume} mute={s.mute} enabled={s.enabled} playOnAwake={s.playOnAwake} spatialBlend={s.spatialBlend}");
+        }
     }
 
     void Awake()
@@ -19,6 +29,8 @@ public class MusicManagerScript : MonoBehaviour
 
     public void PlayMusic(Music music)
     {
+        Debug.Log($"[MusicManager] PlayMusic({music}) called; sources={(sources == null ? -1 : sources.Count)}");
+        if (sources == null) return;
         for(var source = 0; source < sources.Count; source++)
         {
             if(source == (int)music)
@@ -30,6 +42,7 @@ public class MusicManagerScript : MonoBehaviour
                         sources[(int) Music.Gameplay].timeSamples = 350000;
                     }
                     sources[source].Play();
+                    Debug.Log($"[MusicManager]   Play() on [{source}] clip={(sources[source].clip != null ? sources[source].clip.name : "<null>")} isPlaying={sources[source].isPlaying}");
                 }
             }
             else

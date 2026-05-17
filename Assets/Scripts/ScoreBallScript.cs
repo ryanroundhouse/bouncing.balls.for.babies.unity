@@ -23,7 +23,7 @@ public class ScoreBallScript : MonoBehaviour
 
         var randomForce = new Vector3(Utility.GetRandomFloat(0.0f, 1.0f), 0, Utility.GetRandomFloat(0.0f, 1.0f));
         randomForce.Normalize();
-        RelatedBall.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        RelatedBall.GetComponent<Rigidbody>().linearVelocity = new Vector3(0, 0, 0);
 
         RelatedBall.GetComponent<Rigidbody>().AddForce(new Vector3(randomForce.x, 0, randomForce.z) * HitPower);
     }

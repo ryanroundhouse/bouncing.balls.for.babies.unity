@@ -130,7 +130,7 @@ public class CameraScript : MonoBehaviour
             {
                 var randomForce = new Vector3(Utility.GetRandomFloat(0.0f, 1.0f), 0, Utility.GetRandomFloat(0.0f, 1.0f));
                 randomForce.Normalize();
-                ball.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+                ball.GetComponent<Rigidbody>().linearVelocity = new Vector3(0, 0, 0);
 
                 ball.GetComponent<Rigidbody>().AddForce(new Vector3(randomForce.x, 0, randomForce.z) * HitPower);
             }
