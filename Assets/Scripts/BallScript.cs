@@ -63,8 +63,8 @@ public class BallScript : MonoBehaviour
         }
         forceDirection.Normalize();
 
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.AddForce(new Vector3(forceDirection.x, 0, forceDirection.z) * HitPower);
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().AddForce(new Vector3(forceDirection.x, 0, forceDirection.z) * HitPower);
         lastClickPoint = Vector3.zero;
         lastTouchPoint = Vector3.zero;
     }

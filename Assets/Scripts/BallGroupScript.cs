@@ -14,12 +14,12 @@ public class BallGroupScript : MonoBehaviour
         {
             if (isBallAgainstBallBounce && !BallHitWasLast)
             {
-                audio.PlayOneShot(BounceSounds[Utility.GetRandomInt(0, BounceSounds.Count)]);
+                GetComponent<AudioSource>().PlayOneShot(BounceSounds[Utility.GetRandomInt(0, BounceSounds.Count)]);
                 BallHitWasLast = true;
             }
             else if (!isBallAgainstBallBounce)
             {
-                audio.PlayOneShot(BounceSounds[Utility.GetRandomInt(0, BounceSounds.Count)]);
+                GetComponent<AudioSource>().PlayOneShot(BounceSounds[Utility.GetRandomInt(0, BounceSounds.Count)]);
             }
             else
             {

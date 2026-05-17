@@ -9,7 +9,7 @@ public class GuiGameObjectRepositionScript : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-        MainCamera = GameObject.FindGameObjectWithTag("MainCamera").camera;
+        MainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         var v3Pos = PositionInViewpoint;
         transform.position = MainCamera.ViewportToWorldPoint(v3Pos);
 	}

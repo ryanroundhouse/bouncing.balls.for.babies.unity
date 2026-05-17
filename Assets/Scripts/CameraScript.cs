@@ -45,7 +45,7 @@ public class CameraScript : MonoBehaviour
 	    {
 	        foreach (var touch in Input.touches)
             {
-                var ray = camera.ScreenPointToRay(touch.position);
+                var ray = GetComponent<Camera>().ScreenPointToRay(touch.position);
                 if(Physics.Raycast(ray, out hit))
                 {
                     if(hit.transform.tag.Equals("Ball"))
@@ -74,7 +74,7 @@ public class CameraScript : MonoBehaviour
         }
         else if(Input.GetMouseButtonUp(0))
         {
-            var ray = camera.ScreenPointToRay(Input.mousePosition);
+            var ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out hit))
             {
                 if(hit.transform.tag.Equals("Ball"))
@@ -85,7 +85,7 @@ public class CameraScript : MonoBehaviour
         }
         else if (Input.GetMouseButtonDown(0))
         {
-            var ray = camera.ScreenPointToRay(Input.mousePosition);
+            var ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out hit))
             {
                 if(hit.transform.tag.Equals("Ball"))
@@ -101,7 +101,7 @@ public class CameraScript : MonoBehaviour
         }
         else if (Input.GetMouseButton(0))
         {
-            var ray = camera.ScreenPointToRay(Input.mousePosition);
+            var ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out hit))
             {
                 if (hit.transform.tag.Equals("Ball"))
@@ -130,9 +130,9 @@ public class CameraScript : MonoBehaviour
             {
                 var randomForce = new Vector3(Utility.GetRandomFloat(0.0f, 1.0f), 0, Utility.GetRandomFloat(0.0f, 1.0f));
                 randomForce.Normalize();
-                ball.rigidbody.velocity = new Vector3(0, 0, 0);
+                ball.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
 
-                ball.rigidbody.AddForce(new Vector3(randomForce.x, 0, randomForce.z) * HitPower);
+                ball.GetComponent<Rigidbody>().AddForce(new Vector3(randomForce.x, 0, randomForce.z) * HitPower);
             }
         }
 	}
