@@ -166,6 +166,7 @@ public class Cylinderscript : MonoBehaviour
             var gooPosition = new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z);
             var goo = Instantiate(Resources.Load("GooPrefab"), gooPosition, new Quaternion())
                         as GameObject;
+            Destroy(goo, 60f);
             goo.transform.Rotate(0f, Utility.GetRandomFloat(0, 360), 0f);
             var kidMeshRenderers = goo.GetComponentsInChildren<MeshRenderer>();
             var materialName = slimeTypes[Utility.GetRandomInt(0, slimeTypes.Count)];

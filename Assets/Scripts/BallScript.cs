@@ -16,6 +16,9 @@ public class BallScript : MonoBehaviour
     public float DragRefDistance = 5f;
     public float MaxForceMultiplier = 1.25f;
 
+    public float OutOfPlayDropThreshold = 3f;
+    public float OutOfPlayRespawnDelay = 15f;
+
     private BallGroupScript BallGroupScript;
     private Vector3 tapStart;
     private Vector3 dragCurrent;
@@ -24,18 +27,65 @@ public class BallScript : MonoBehaviour
     private LineRenderer launchLine;
     private LineRenderer tipRing;
 
+    private Vector3 spawnPosition;
+    private Quaternion spawnRotation;
+    private bool outOfPlay;
+    private float outOfPlaySince;
+
     void Start()
     {
         Score = 0;
         BallGroupScript = BounceSoundManager.GetComponent<BallGroupScript>();
         BuildLaunchIndicator();
+        spawnPosition = transform.position;
+        spawnRotation = transform.rotation;
+    }
+
+    void Update()
+    {
+        CheckOutOfPlay();
+    }
+
+    void CheckOutOfPlay()
+    {
+        var fallenOut = transform.position.y < spawnPosition.y - OutOfPlayDropThreshold;
+        if (fallenOut && !outOfPlay)
+        {
+            outOfPlay = true;
+            outOfPlaySince = Time.time;
+        }
+        else if (!fallenOut && outOfPlay)
+        {
+            outOfPlay = false;
+        }
+
+        if (outOfPlay && Time.time - outOfPlaySince >= OutOfPlayRespawnDelay)
+        {
+            RespawnAtStart();
+        }
+    }
+
+    void RespawnAtStart()
+    {
+        var rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        transform.position = spawnPosition;
+        transform.rotation = spawnRotation;
+        outOfPlay = false;
+        isDragging = false;
+        HideLaunchIndicator();
     }
 
     public void squishSomething()
     {
         Score++;
         BumpMusicPitchForLeader();
-        if (Score >= 5)
+        var target = WinningInfoScript.SquishTarget;
+        if (target > 0 && Score >= target)
         {
             WinningInfoScript.WinningPlanet = name;
             WinningInfoScript.WinningPlanetIndex = BallIndex;
@@ -55,8 +105,10 @@ public class BallScript : MonoBehaviour
         if (manager == null) return;
         var music = manager.GetComponent<MusicManagerScript>();
         if (music == null) return;
-        // 1.0x at no squishes, ramping to 1.3x as someone gets close to the 5-squish win.
-        music.SetPitchScale(1f + Mathf.Clamp01(leader / 5f) * 0.3f);
+        // Ramp 1.0x → 1.3x as the leader approaches the squish target.
+        // Infinite mode has no finish line, so cap the ramp scale at 10 to keep the pitch climbing modestly.
+        var rampMax = WinningInfoScript.IsInfiniteMode ? 10f : Mathf.Max(1f, WinningInfoScript.SquishTarget);
+        music.SetPitchScale(1f + Mathf.Clamp01(leader / rampMax) * 0.3f);
     }
 
     void OnCollisionEnter(Collision collision)

@@ -71,6 +71,14 @@ public class CameraScript : MonoBehaviour
             Application.Quit();
         }
 
+        // While the parent menu icon is being long-pressed or the menu is open, the touch belongs
+        // to the menu — don't let it also raycast onto a ball and trigger a flick.
+        if (ScoreCameraScript.IsInputCaptured)
+        {
+            ApplyCameraBump();
+            return;
+        }
+
         var releasedOnBall = new Dictionary<int, bool>();
         var hit = new RaycastHit();
         if (Input.touches.Any())
