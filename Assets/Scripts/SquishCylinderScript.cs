@@ -9,6 +9,7 @@ public class SquishCylinderScript : MonoBehaviour
 {
     public Vector3 TopLeftSpawnLocation;
     public Vector3 BottomRightSpawnLocation;
+    public float RunnerSpawnChance = 0.35f;
     private List<GameObject> SquishCylinders;
     private const int DelayBeforeSpawningBugs = 2;
     private float TimeSinceLastRestart;
@@ -38,7 +39,9 @@ public class SquishCylinderScript : MonoBehaviour
 	            var squishCylinder =
 	                Instantiate(Resources.Load("BugPrefab"), position, new Quaternion())
 	                    as GameObject;
-	            squishCylinder.GetComponent<Cylinderscript>().ParentScript = this;
+	            var cylinderScript = squishCylinder.GetComponent<Cylinderscript>();
+	            cylinderScript.ParentScript = this;
+	            cylinderScript.IsRunner = Utility.GetRandomFloat(0f, 1f) < RunnerSpawnChance;
 	            SquishCylinders.Add(squishCylinder);
 	        }
 	    }
@@ -51,6 +54,21 @@ public class SquishCylinderScript : MonoBehaviour
             SquishCylinders.Remove(cylinder);
             Destroy(cylinder);
         }
+    }
+
+    // Spawn-rectangle bounds for the arena. Note the original spawn samples X from
+    // TopLeftSpawnLocation.{x,z} and Z from BottomRightSpawnLocation.{x,z} — these helpers
+    // expose the same min/max so runners can be clamped to where they're allowed to be.
+    public void GetSpawnBoundsX(out float min, out float max)
+    {
+        min = Mathf.Min(TopLeftSpawnLocation.x, TopLeftSpawnLocation.z);
+        max = Mathf.Max(TopLeftSpawnLocation.x, TopLeftSpawnLocation.z);
+    }
+
+    public void GetSpawnBoundsZ(out float min, out float max)
+    {
+        min = Mathf.Min(BottomRightSpawnLocation.x, BottomRightSpawnLocation.z);
+        max = Mathf.Max(BottomRightSpawnLocation.x, BottomRightSpawnLocation.z);
     }
 
     private float GetTimeSinceLastRestart()

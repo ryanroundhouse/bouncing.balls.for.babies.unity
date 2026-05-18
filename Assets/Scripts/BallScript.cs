@@ -34,12 +34,29 @@ public class BallScript : MonoBehaviour
     public void squishSomething()
     {
         Score++;
+        BumpMusicPitchForLeader();
         if (Score >= 5)
         {
             WinningInfoScript.WinningPlanet = name;
             WinningInfoScript.WinningPlanetIndex = BallIndex;
             SceneManager.LoadScene("VictoryScene");
         }
+    }
+
+    static void BumpMusicPitchForLeader()
+    {
+        var leader = 0;
+        foreach (var b in GameObject.FindGameObjectsWithTag("Ball"))
+        {
+            var s = b.GetComponent<BallScript>();
+            if (s != null && s.Score > leader) leader = s.Score;
+        }
+        var manager = GameObject.Find("MusicManager");
+        if (manager == null) return;
+        var music = manager.GetComponent<MusicManagerScript>();
+        if (music == null) return;
+        // 1.0x at no squishes, ramping to 1.3x as someone gets close to the 5-squish win.
+        music.SetPitchScale(1f + Mathf.Clamp01(leader / 5f) * 0.3f);
     }
 
     void OnCollisionEnter(Collision collision)

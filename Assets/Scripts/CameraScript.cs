@@ -23,14 +23,44 @@ public class CameraScript : MonoBehaviour
     private Dictionary<GameObject, int> dragInputId;
     private const int MouseInputId = -1;
 
+    private Vector3 cameraBasePosition;
+    private float bumpStrength;
+    private float bumpDuration;
+    private float bumpElapsed;
+
     void Start()
     {
         shakeDetectionThreshold *= shakeDetectionThreshold;
         lowPassValue = Input.acceleration;
         touchList = new List<GameObject>();
         dragInputId = new Dictionary<GameObject, int>();
+        cameraBasePosition = transform.localPosition;
+        bumpElapsed = float.MaxValue;
 
-        GameObject.Find("MusicManager").GetComponent<MusicManagerScript>().PlayMusic(Music.Gameplay);
+        var music = GameObject.Find("MusicManager").GetComponent<MusicManagerScript>();
+        music.SetPitchScale(1f);
+        music.PlayMusic(Music.Gameplay);
+    }
+
+    public void Bump(float strength, float duration)
+    {
+        // Reset whenever a new bump comes in so a fresh squish gets full kick even if one is in flight.
+        bumpStrength = strength;
+        bumpDuration = Mathf.Max(0.01f, duration);
+        bumpElapsed = 0f;
+    }
+
+    void ApplyCameraBump()
+    {
+        if (bumpElapsed >= bumpDuration)
+        {
+            transform.localPosition = cameraBasePosition;
+            return;
+        }
+        bumpElapsed += Time.deltaTime;
+        var falloff = 1f - Mathf.Clamp01(bumpElapsed / bumpDuration);
+        var jitter = new Vector3(Utility.GetRandomFloat(-1f, 1f), Utility.GetRandomFloat(-1f, 1f), 0f) * bumpStrength * falloff;
+        transform.localPosition = cameraBasePosition + jitter;
     }
 
     // Update is called once per frame
@@ -145,6 +175,8 @@ public class CameraScript : MonoBehaviour
                 ball.GetComponent<Rigidbody>().AddForce(new Vector3(randomForce.x, 0, randomForce.z) * HitPower);
             }
         }
+
+        ApplyCameraBump();
     }
 
     Vector3 ProjectToBallPlane(Vector2 screenPos, GameObject ball)

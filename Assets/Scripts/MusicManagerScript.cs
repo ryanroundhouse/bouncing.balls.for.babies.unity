@@ -27,10 +27,19 @@ public class MusicManagerScript : MonoBehaviour
         DontDestroyOnLoad(transform.gameObject);
     }
 
+    public void SetPitchScale(float scale)
+    {
+        if (sources == null) return;
+        var clamped = Mathf.Clamp(scale, 0.5f, 2.0f);
+        foreach (var s in sources) s.pitch = clamped;
+    }
+
     public void PlayMusic(Music music)
     {
         Debug.Log($"[MusicManager] PlayMusic({music}) called; sources={(sources == null ? -1 : sources.Count)}");
         if (sources == null) return;
+        // Victory should always play at the natural pitch — the gameplay pitch ramp shouldn't leak into the win sting.
+        if (music == Music.Victory) SetPitchScale(1f);
         for(var source = 0; source < sources.Count; source++)
         {
             if(source == (int)music)
